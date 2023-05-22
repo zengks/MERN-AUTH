@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux"
 import FormContainer from "../components/FormContainer"
 import { useLoginMutation } from "../slices/usersApiSlice"
 import { setCredentials } from "../slices/authSlice"
+import { toast } from "react-toastify"
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("")
@@ -13,7 +14,7 @@ const LoginScreen = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  // isLoading is there by default without defining it
+  // isLoading&error is there by default without defining it
   const [login, { isLoading, error }] = useLoginMutation()
 
   const { userInfo } = useSelector((state) => state.auth)
@@ -26,7 +27,14 @@ const LoginScreen = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault()
-    console.log("submit")
+    try {
+      // 'unwrap()' unwraps the Promise return from login()
+      const res = await login({ email, password }).unwrap()
+      dispatch(setCredentials({ ...res }))
+      navigate("/")
+    } catch (err) {
+      toast.error(err.data.message || err.error)
+    }
   }
 
   return (
