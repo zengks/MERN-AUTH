@@ -6,7 +6,6 @@ import connectDB from './config/db.js'
 import cookieParser from 'cookie-parser';
 import path from 'path'
 
-
 dotevn.config();
 
 connectDB();
